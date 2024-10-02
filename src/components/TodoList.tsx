@@ -1,35 +1,36 @@
+import Add from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, Checkbox, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { useObservable } from '@ngneat/react-rxjs';
 // src\components\TodoList.tsx
 
-import React, { useState, KeyboardEvent } from 'react';
-import { useObservable } from '@ngneat/react-rxjs';
-import { TextField, Select, MenuItem, Button, IconButton, Typography, Checkbox } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { selectVisibleTodos } from '../store/todo.selectors';
-import { addTodo, updateTodo, deleteTodo } from '../store/todo.actions';
-import { Priority, TodoItem } from '../types/todo';
+import React, { KeyboardEvent, useState } from 'react';
+
 import { useAnalytics } from '../hooks/analytics.hook';
-import Add from '@mui/icons-material/Add';
+import { addTodo, deleteTodo, updateTodo } from '../store/todo.actions';
+import { selectVisibleTodos } from '../store/todo.selectors';
+import { TodoItem } from '../types/todo';
 
 const priorityLabels = {
-    p1: 'Priority 1',
-    p2: 'Priority 2',
-    p3: 'Priority 3',
-    p4: 'Priority 4',
+    1: 'Priority 1',
+    2: 'Priority 2',
+    3: 'Priority 3',
+    4: 'Priority 4',
 };
 
 export const TodoList: React.FC = () => {
     const [todos] = useObservable(selectVisibleTodos);
     const [newTodoName, setNewTodoName] = useState('');
-    const [newTodoPriority, setNewTodoPriority] = useState<Priority>('p1');
+    const [newTodoPriority, setNewTodoPriority] = useState<number>(1);
     const [showAddTask, setShowAddTask] = useState(false);
     const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
     const { client: analyticsClient } = useAnalytics();
 
-    const getPriorityColor = (priority: Priority) => {
+    const getPriorityColor = (priority: number) => {
         switch (priority) {
-            case 'p2': return 'blue';
-            case 'p3': return 'orange';
-            case 'p4': return 'red';
+            case 2: return 'blue';
+            case 3: return 'orange';
+            case 4: return 'red';
             default: return 'gray';
         }
     };
@@ -43,7 +44,7 @@ export const TodoList: React.FC = () => {
                 payload: { todo_name: newTodo.name }
             });
             setNewTodoName('');
-            setNewTodoPriority('p1');
+            setNewTodoPriority(1);
             setShowAddTask(false);
         }
     };
@@ -84,7 +85,7 @@ export const TodoList: React.FC = () => {
                 eventName: "todo_marked",
                 payload: {
                     todo_name: todo.name,
-                    priority: Number(todo.priority.slice(1))
+                    priority: todo.priority
                 }
             });
         }
@@ -156,7 +157,7 @@ export const TodoList: React.FC = () => {
                     />
                     <Select
                         value={newTodoPriority}
-                        onChange={(e) => setNewTodoPriority(e.target.value as Priority)}
+                        onChange={(e) => setNewTodoPriority(e.target.value as number)}
                         size="small"
                         style={{ minWidth: '120px' }}
                     >
