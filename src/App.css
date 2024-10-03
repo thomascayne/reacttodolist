@@ -1,3 +1,47 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Priority classes for unchecked items (border color) */
+.priority-1-border {
+    @apply border-gray-500;
+  }
+  
+  .priority-2-border {
+    @apply border-blue-500;
+  }
+  
+  .priority-3-border {
+    @apply border-orange-500;
+  }
+  
+  .priority-4-border {
+    @apply border-red-500;
+  }
+  
+  /* Priority classes for checked items (background color) */
+  .priority-1-bg {
+    @apply bg-gray-500;
+  }
+  
+  .priority-2-bg {
+    @apply bg-blue-500;
+  }
+  
+  .priority-3-bg {
+    @apply bg-orange-500;
+  }
+  
+  .priority-4-bg {
+    @apply bg-red-500;
+  }
+  
+  /* Common styles for checkboxes */
+  .todo-checkbox {
+    @apply w-5 h-5 rounded-full cursor-pointer;
+  }
+  
+  .todo-checkbox-unchecked {
+    @apply border-2;
+  }
+  
