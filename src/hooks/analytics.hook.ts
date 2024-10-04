@@ -11,7 +11,7 @@ interface AnalyticsClient {
   capture: (event: AnalyticsEvent) => void;
 }
 
-const dummyAnalyticsClient: AnalyticsClient = {
+const analyticsClient: AnalyticsClient = {
   capture: ({ eventName, payload }: AnalyticsEvent) => {
     console.log(`Analytics event captured: ${eventName}`, payload);
   }
@@ -19,7 +19,7 @@ const dummyAnalyticsClient: AnalyticsClient = {
 
 export const useAnalytics = (): { client: AnalyticsClient } => {
   const capture = useCallback((event: AnalyticsEvent) => {
-    dummyAnalyticsClient.capture(event);
+    analyticsClient.capture(event);
   }, []);
 
   return { client: { capture } };
