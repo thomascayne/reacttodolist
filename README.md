@@ -36,6 +36,7 @@ The following articles were instrumental in overcoming various challenges:
 - [ESLint Plugin for Testing Library](https://github.com/testing-library/eslint-plugin-testing-library/blob/main/docs/rules/prefer-user-event.md)
 - [Testing Material-UI Checkbox](https://stackoverflow.com/questions/53271663/how-to-test-material-ui-checkbox-is-checked-with-react-testing-library)
 - [Checking Checkbox in React Testing Library](https://stackoverflow.com/questions/55177928/how-do-you-check-a-checkbox-in-react-testing-library)
+- [Persist State with NgNeat Elf](https://ngneat.github.io/elf/docs/features/persist-state/)
 
 ## Project Structure
 
