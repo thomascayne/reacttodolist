@@ -16,6 +16,10 @@ export const todoStore = createStore(
   })
 );
 
+/**
+ * Add persist state to the store. No coding needs to be done.
+ * The library takes car of it
+ */
 export const persist = persistState(todoStore, {
   key: 'todos',
   storage: localStorageStrategy,
