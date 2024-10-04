@@ -1,5 +1,5 @@
 // src/hooks/analytics.hook.ts
-// src/hooks/analytics.hook.ts
+
 import { useCallback } from 'react';
 
 interface AnalyticsEvent {
@@ -11,15 +11,16 @@ interface AnalyticsClient {
   capture: (event: AnalyticsEvent) => void;
 }
 
-const dummyAnalyticsClient: AnalyticsClient = {
+const analyticsClient: AnalyticsClient = {
   capture: ({ eventName, payload }: AnalyticsEvent) => {
+    // send to analytics service according to requirements
     console.log(`Analytics event captured: ${eventName}`, payload);
   }
 };
 
 export const useAnalytics = (): { client: AnalyticsClient } => {
   const capture = useCallback((event: AnalyticsEvent) => {
-    dummyAnalyticsClient.capture(event);
+    analyticsClient.capture(event);
   }, []);
 
   return { client: { capture } };

@@ -25,7 +25,7 @@ export const selectVisibleTodos = todoStore.pipe(
 
         return filteredTodos.sort((a, b) => {
             if (sort === 'priority') {
-                return a.priority.localeCompare(b.priority)
+                return a.priority - b.priority;
             } else if (sort === 'createdAt') {
                 return b.createdAt.getTime() - a.createdAt.getTime();
             } else {

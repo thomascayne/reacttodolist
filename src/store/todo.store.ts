@@ -2,6 +2,8 @@
 
 import { createStore, withProps } from '@ngneat/elf';
 import { withEntities } from '@ngneat/elf-entities';
+import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
+
 import { TodoItem, TodoState } from '../types/todo';
 
 export const todoStore = createStore(
@@ -13,3 +15,12 @@ export const todoStore = createStore(
     nextId: 1
   })
 );
+
+/**
+ * Add persist state to the store. No coding needs to be done.
+ * The library takes car of it
+ */
+export const persist = persistState(todoStore, {
+  key: 'todos',
+  storage: localStorageStrategy,
+});
