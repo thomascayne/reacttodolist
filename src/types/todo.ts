@@ -8,9 +8,13 @@ export interface TodoItem {
     updatedAt: Date;
 }
 
+export type SortDirection = 'asc' | 'desc';
+
 export interface TodoState {
     filter: 'all' | 'active' | 'completed';
-    sort: 'priority' | 'createdAt' | 'name';
+    sort: {
+        direction: SortDirection
+    };
     entities: Record<string, TodoItem>;
     ids: number[];
     nextId: number;
