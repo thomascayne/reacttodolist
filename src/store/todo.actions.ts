@@ -1,8 +1,9 @@
 // src\store\todo.actions.ts
 
 import { addEntities, deleteEntities, setEntities, updateEntities } from "@ngneat/elf-entities";
-import { todoStore } from "./todo.store";
+
 import { TodoItem, TodoState } from "../types/todo";
+import { todoStore } from "./todo.store";
 
 export const addTodo = (todo: Omit<TodoItem, 'id' | 'createdAt' | 'updatedAt'>) => {
     todoStore.update((state, context) => {

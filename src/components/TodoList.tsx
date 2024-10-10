@@ -2,14 +2,17 @@
 
 import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { Button, Checkbox, IconButton, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { useObservable } from '@ngneat/react-rxjs';
 import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
 
 import { useAnalytics } from '../hooks/analytics.hook';
-import { addTodo, deleteTodo, updateTodo } from '../store/todo.actions';
+import { addTodo, deleteTodo, setSort, setTodos, updateTodo } from '../store/todo.actions';
 import { selectVisibleTodos } from '../store/todo.selectors';
-import { TodoItem } from '../types/todo';
+import { todoStore } from '../store/todo.store';
+import { SortDirection, TodoItem } from '../types/todo';
 
 const priorityLabels = {
     1: 'Priority 1',
@@ -19,18 +22,27 @@ const priorityLabels = {
 };
 
 export const TodoList: React.FC = () => {
+    // watch for changes in the store
     const [todos] = useObservable(selectVisibleTodos);
-    const [newTodoName, setNewTodoName] = useState('');
-    const [newTodoPriority, setNewTodoPriority] = useState<number>(1);
+
+    // in case of a re-render, we want to reset the state
+    const sortDirectionFromStore = todoStore.getValue().sort.direction;
+
     const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
     const [editingTodoName, setEditingTodoName] = useState('');
-    const editInputRef = useRef<HTMLInputElement>(null)
+    const [newTodoName, setNewTodoName] = useState('');
+    const [newTodoPriority, setNewTodoPriority] = useState<number>(1);
     const { client: analyticsClient } = useAnalytics();
+    const editInputRef = useRef<HTMLInputElement>(null)
+
+    const [sortDirection, setSortDirection] = useState<SortDirection>(sortDirectionFromStore);
 
     useEffect(() => {
         if (editingTodoId !== null && editInputRef.current) {
             editInputRef.current.focus();
         }
+
+        setSortDirection
     }, [editingTodoId]);
 
     const handleAddTodo = () => {
@@ -50,7 +62,6 @@ export const TodoList: React.FC = () => {
     };
 
     const handleDeleteTodo = (id: number) => {
-        console.log(id)
         deleteTodo(id);
     };
 
@@ -80,9 +91,21 @@ export const TodoList: React.FC = () => {
         setEditingTodoName('');
     };
 
+    const handleSortDirectionToggle = () => {
+        const direction = sortDirection === 'asc' ? 'desc' : 'asc';
+        setSortDirection(direction);
+
+        // set the new sort direction
+        setSort({ direction });
+
+        // and then update the store
+        setTodos([...todos]);
+    };
+
+
     const handleToggleTodo = (todo: TodoItem) => {
         const updatedTodo = { ...todo, completed: !todo.completed };
-        
+
         updateTodo(todo.id, updatedTodo);
 
         if (updatedTodo.completed) {
@@ -102,13 +125,13 @@ export const TodoList: React.FC = () => {
                 aria-label={`Toggle ${todo.name}`}
                 checked={todo.completed}
                 checkedIcon={
-                    <span 
+                    <span
                         className={`w-5 h-5 rounded-full cursor-pointer todo-checkbox priority-${todo.priority}-bg`}
                     />
                 }
                 data-testid={`todo-checkbox-${todo.id}`}
                 icon={
-                    <span 
+                    <span
                         className={`w-5 h-5 rounded-full border-2 cursor-pointer todo-checkbox todo-checkbox-unchecked priority-${todo.priority}-border`}
                     />
                 }
@@ -116,7 +139,7 @@ export const TodoList: React.FC = () => {
                 onChange={() => handleToggleTodo(todo)}
                 role="checkbox"
                 tabIndex={0}
-                sx={{ padding: 0}}
+                sx={{ padding: 0 }}
             />
 
             <div className="flex-grow ml-4">
@@ -158,6 +181,7 @@ export const TodoList: React.FC = () => {
 
     return (
         <div className="max-w-md mx-auto p-4">
+
             {incompleteTodos && incompleteTodos.length > 0 && (
                 <div className="mb-4">
                     {incompleteTodos.map(renderTodoItem)}
@@ -187,7 +211,7 @@ export const TodoList: React.FC = () => {
                 </Select>
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 flex gap-4">
                 <Button
                     color="primary"
                     onClick={handleAddTodo}
@@ -196,6 +220,20 @@ export const TodoList: React.FC = () => {
                 >
                     <span className="ml-2">Add Task</span>
                 </Button>
+                <div className="flex gap-2 items-center">
+                    <span className='mr-4'>Sort:</span>
+                    <Button
+                        aria-label="Toggle sort direction"
+                        color="primary"
+                        disabled={incompleteTodos.length === 0}
+                        onClick={handleSortDirectionToggle}
+                        startIcon={sortDirection === 'asc' ? <KeyboardArrowUpIcon /> : <KeyboardArrowDown />}
+                        variant="contained"
+                    >
+                        <span className='mr-4'>Priority</span>
+                    </Button>
+
+                </div>
             </div>
 
             {completedTodos.length > 0 && (

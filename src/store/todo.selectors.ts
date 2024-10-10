@@ -1,9 +1,10 @@
 // src/store/todo.selectors.ts
 
 import { selectAllEntities } from "@ngneat/elf-entities";
-import { todoStore } from "./todo.store";
 import { filter, map } from "rxjs/operators";
+
 import { TodoItem } from "../types/todo";
+import { todoStore } from "./todo.store";
 
 export const selectTodos = todoStore.pipe(selectAllEntities());
 
@@ -24,13 +25,15 @@ export const selectVisibleTodos = todoStore.pipe(
         }
 
         return filteredTodos.sort((a, b) => {
-            if (sort === 'priority') {
-                return a.priority - b.priority;
-            } else if (sort === 'createdAt') {
-                return b.createdAt.getTime() - a.createdAt.getTime();
-            } else {
-                return a.name.localeCompare(b.name);
-            }
+            // compare the priority of the two todos
+            // lower priority number means higher impotance - that is, 1 is more important than 4
+            const comparison = a.priority - b.priority;
+
+            // using ternary will yield the following
+            // if sorting in ascending order (1 to 4), return the comparison as is
+            // if sorting in descending order 94 to 1), negate the comparison with "-"
+    
+            return sort.direction === 'asc' ? comparison : -comparison;
         })
     })
 )
